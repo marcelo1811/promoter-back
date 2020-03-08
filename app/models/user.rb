@@ -6,6 +6,8 @@ class User < ApplicationRecord
 
   enum role: ['admin', 'promoter']
 
+  has_many :establishments, foreign_key: :user_id
+
   validates :first_name, presence: true
   validates :last_name, presence: true
   validates :role, presence: true

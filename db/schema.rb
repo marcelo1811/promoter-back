@@ -10,10 +10,36 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_08_163001) do
+ActiveRecord::Schema.define(version: 2020_03_08_165053) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "establishments", force: :cascade do |t|
+    t.integer "admin_id"
+    t.string "name"
+    t.string "address"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "promoters", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "establishment_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["establishment_id"], name: "index_promoters_on_establishment_id"
+    t.index ["user_id"], name: "index_promoters_on_user_id"
+  end
+
+  create_table "registers", force: :cascade do |t|
+    t.bigint "promoter_id", null: false
+    t.bigint "establishment_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["establishment_id"], name: "index_registers_on_establishment_id"
+    t.index ["promoter_id"], name: "index_registers_on_promoter_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -30,4 +56,8 @@ ActiveRecord::Schema.define(version: 2020_03_08_163001) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "promoters", "establishments"
+  add_foreign_key "promoters", "users"
+  add_foreign_key "registers", "establishments"
+  add_foreign_key "registers", "promoters"
 end
